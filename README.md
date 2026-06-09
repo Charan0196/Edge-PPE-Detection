@@ -158,7 +158,7 @@ Benchmark collected locally on Apple M1 CPU using `imgsz=416`, `warmup=3`, and `
 
 ## Required Links
 
-- GitHub repository: `TODO: paste public repo URL`
+- GitHub repository: https://github.com/Charan0196/Edge-PPE-Detection
 - FP32 weights: `TODO: paste Google Drive / Hugging Face URL`
 - FP16 ONNX weights: `TODO: paste Google Drive / Hugging Face URL`
 - 2-3 minute video proof: `TODO: paste unlisted YouTube / Loom / Drive URL`
