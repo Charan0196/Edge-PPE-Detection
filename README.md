@@ -159,6 +159,6 @@ Benchmark collected locally on Apple M1 CPU using `imgsz=416`, `warmup=3`, and `
 ## Required Links
 
 - GitHub repository: https://github.com/Charan0196/Edge-PPE-Detection
-- FP32 weights: `TODO: paste Google Drive / Hugging Face URL`
-- FP16 ONNX weights: `TODO: paste Google Drive / Hugging Face URL`
+- FP32 weights: https://drive.google.com/drive/folders/1a1Ez8ViZOb9bdStFzr4lTn83Z7uW26nh?usp=sharing
+- FP16 ONNX weights: https://drive.google.com/drive/folders/1a1Ez8ViZOb9bdStFzr4lTn83Z7uW26nh?usp=sharing
 - 2-3 minute video proof: `TODO: paste unlisted YouTube / Loom / Drive URL`
