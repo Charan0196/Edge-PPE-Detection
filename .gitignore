@@ -13,3 +13,4 @@ runs/
 
 *.mp4
 *.log
+yolov8n.pt

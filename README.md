@@ -125,6 +125,16 @@ The video overlay includes:
 - Pre-processing latency in milliseconds
 - Post-processing/NMS latency in milliseconds
 
+## Demo Video
+
+A 30-second slow demo video with model overlays is available locally at:
+
+```text
+demo/hardhat_30sec_slow_inference.mp4
+```
+
+The demo was generated from held-out test images at 10 FPS with each annotated frame held long enough to make bounding boxes and metrics easy to see.
+
 ## Benchmark
 
 After training and conversion, run:
@@ -152,4 +162,3 @@ Benchmark collected locally on Apple M1 CPU using `imgsz=416`, `warmup=3`, and `
 - FP32 weights: `TODO: paste Google Drive / Hugging Face URL`
 - FP16 ONNX weights: `TODO: paste Google Drive / Hugging Face URL`
 - 2-3 minute video proof: `TODO: paste unlisted YouTube / Loom / Drive URL`
-# Edge-PPE-Detection

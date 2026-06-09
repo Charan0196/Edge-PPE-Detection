@@ -1,129 +1,65 @@
-# Edge PPE Detection - Assignment Submission
+# Edge PPE Detection Assignment Submission
 
-## Project Overview
-This project implements an edge-optimized object detection system for detecting Personal Protective Equipment (PPE), specifically hard hats, in industrial settings.
+## Phase 1: Data Sourcing And Base Training
 
-## Phase 1: Data Sourcing & Base Training
-- **Dataset**: Hard Hat Detection Dataset (Kaggle)
-- **Size**: 4,000+ images with annotations
-- **Base Model**: YOLOv8n (nano variant)
-- **Training Precision**: FP32
-- **Epochs**: 100
-- **Image Size**: 416x416
-- **Batch Size**: 16
+Problem selected: industrial PPE compliance monitoring for construction sites. The detector identifies `helmet`, `person`, and uncovered `head` classes so an edge camera can help detect missing hardhats.
 
-### Training Results
-- Initial mAP50-95: ~0.65 (baseline)
-- Training time: ~2-3 hours on GPU
+Dataset used: [Safety Helmet Detection / Hard Hat Dataset on Kaggle](https://www.kaggle.com/datasets/andrewmvd/hard-hat-detection). The dataset contains 5,000 images with Pascal VOC bounding-box annotations for `helmet`, `person`, and `head`, satisfying the minimum 500-image requirement.
 
-## Phase 2: Edge Conversion & Quantization
-- **Target Format**: ONNX
-- **Quantization Method**: FP16 precision
-- **Model Size Reduction**: ~50% size reduction
-- **Inference Target**: CPU-based edge devices
+Baseline model: YOLOv8n trained in FP32 precision with Ultralytics.
 
-### Conversion Pipeline
-1. Trained FP32 model (PyTorch)
-2. Export to ONNX format
-3. Apply FP16 quantization
-4. Validate on test dataset
+Training entry points:
 
-## Phase 3: Live Inference Script
-- **Script**: `live_inference.py`
-- **Input**: Video file or webcam feed
-- **Output**: Real-time inference with metrics overlay
-- **Metrics**:
-  - Bounding boxes with class labels
-  - Confidence scores
-  - Inference FPS (excluding rendering)
-  - Pre-processing latency (ms)
-  - Post-processing/NMS latency (ms)
+- `notebooks/train_baseline_yolov8n.ipynb`
+- `scripts/prepare_hardhat_dataset.py`
+- `scripts/train_yolov8n.py`
 
-## Deliverables
+## Phase 2: Edge Conversion And Quantization
 
-### 1. Source Code & Model Weights
-- **GitHub Repository**: https://github.com/Charan0196/Edge-PPE-Detection
-- **Model Weights**: Google Drive link (to be updated)
-  - FP32 Model: `yolov8n_hardhat_fp32.pt`
-  - ONNX FP32: `yolov8n_hardhat_fp32.onnx`
-  - ONNX FP16: `yolov8n_hardhat_fp16.onnx`
+Edge format selected: ONNX.
 
-### 2. Performance Benchmark Table
+Quantization selected: FP16.
 
-| Metric | FP32 (Baseline) | FP16 (Quantized) | Improvement |
-|--------|-----------------|------------------|-------------|
-| Model Size (MB) | 24.5 | 12.3 | 50% reduction |
-| mAP50-95 | 0.650 | 0.645 | -0.77% accuracy |
-| Inference FPS | 45 | 58 | +28.9% speed |
-| Memory Usage (MB) | 850 | 480 | 43.5% reduction |
-| Pre-processing (ms) | 8.2 | 8.2 | Same |
-| Inference (ms) | 22.2 | 17.2 | +22.5% faster |
-| Post-processing (ms) | 3.1 | 3.1 | Same |
+Rationale: FP16 conversion cuts the model footprint substantially while preserving most of the FP32 accuracy. It is simpler and safer than INT8 for this assignment because INT8 requires calibration data and can cause larger accuracy degradation if the calibration set does not represent the deployment environment well.
 
-**Key Findings**:
-- FP16 quantization achieves excellent speed-up with minimal accuracy loss
-- Model size reduced by 50%, enabling deployment on edge devices
-- Inference FPS increased from 45 to 58 FPS (desktop CPU)
-- Memory footprint reduced by 43.5%
+Conversion entry point:
 
-### 3. Video Proof
-- **Platform**: YouTube (unlisted)
-- **Duration**: 2-3 minutes
-- **Content**:
-  - Live inference on test video
-  - Real-time metrics overlay display
-  - Explanation of FP16 quantization choice
-  - Trade-offs between accuracy and speed
-  - Performance comparison demo
+- `scripts/convert_to_onnx_fp16.py`
 
-## Usage
+## Phase 3: Inference Script And Metrics
 
-### Training
-```bash
-python run_pipeline.py
-```
+Live inference entry point:
 
-### Inference
-```bash
-python live_inference.py \
-  --model weights/yolov8n_hardhat_fp16.onnx \
-  --source data/demo/hardhat_test_video.mp4 \
-  --data data/hardhat_yolo/data.yaml \
-  --imgsz 416 \
-  --conf 0.25 \
-  --iou 0.45 \
-  --providers CPUExecutionProvider
-```
+- `live_inference.py`
 
-## Technical Stack
-- **Framework**: PyTorch, Ultralytics YOLOv8
-- **Edge Format**: ONNX
-- **Runtime**: ONNX Runtime
-- **Quantization**: FP16 precision
-- **Video Processing**: OpenCV
-- **Languages**: Python 3.9+
+The script loads the ONNX FP16 model with ONNX Runtime and overlays the required real-time metrics:
 
-## Installation
-```bash
-pip install -r requirements.txt
-```
+- Bounding boxes with class names and confidence scores
+- Inference FPS excluding rendering time
+- Pre-processing latency in milliseconds
+- Post-processing/NMS latency in milliseconds
 
-## Repository Structure
-```
-edge-ppe-detection/
-├── live_inference.py          # Real-time inference script
-├── run_pipeline.py            # Training pipeline
-├── run_pipeline_fixed.py       # Fixed training pipeline
-├── requirements.txt           # Python dependencies
-├── data/                      # Dataset folder
-├── weights/                   # Model weights
-├── scripts/                   # Utility scripts
-├── notebooks/                 # Jupyter notebooks
-└── README.md                  # Project documentation
-```
+## Source Code And Model Weights
 
-## Notes
-- The FP16 quantization was chosen for optimal balance between model size and accuracy
-- All metrics are calculated excluding rendering time for fair FPS comparison
-- Edge deployment tested on CPU-only systems
-- Model achieves real-time inference (58+ FPS) on standard hardware
+- Public GitHub repository: `https://github.com/Charan0196/Edge-PPE-Detection`
+- Original FP32 model weights: `weights/yolov8n_hardhat_fp32.pt`
+- Converted FP16 ONNX edge weights: `weights/yolov8n_hardhat_fp16.onnx`
+
+Upload the model weights to Google Drive or Hugging Face and paste the public links here before final submission.
+
+## Performance Benchmark Table
+
+Benchmark collected locally on Apple M1 CPU using `imgsz=416`, `warmup=3`, and `runs=30`.
+
+| Metric | FP32 YOLOv8n `.pt` | FP16 ONNX Edge Model | Change |
+|---|---:|---:|---:|
+| Model size (MB) | 23.29 | 5.83 | -17.46 |
+| mAP50-95 | 0.3125 | 0.3037 | -0.0088 |
+| FPS on local machine | 5.63 | 6.24 | +0.60 |
+
+## Video Proof
+
+- Local 30-second slow demo: `demo/hardhat_30sec_slow_inference.mp4`
+- Final required upload link: `TODO: paste unlisted YouTube / Loom / Google Drive URL`
+
+The final video should show `live_inference.py` running locally, point out the bounding boxes and the FPS/preprocess/inference/post-NMS overlay metrics, and explain why FP16 was chosen over INT8 for this edge conversion.
