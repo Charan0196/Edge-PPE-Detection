@@ -10,11 +10,6 @@ build/
 
 data/
 runs/
-notebooks/
-weights/*
-!weights/.gitkeep
 
 *.mp4
-*.onnx
-*.pt
 *.log
